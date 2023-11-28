@@ -8,116 +8,96 @@ namespace Diplomandi
 {
     internal class Program
     {
-        static void Main()
+        class Diplomati
         {
-            List<Diplomato> elencoDiplomati = new List<Diplomato>();
+            protected string _nome;
+            protected string _cognome;
+            protected int _voto;
 
-            while (true)
+            public void SetNome(string nome)
             {
-                Console.WriteLine("1. Inserisci diplomato");
-                Console.WriteLine("2. Stampa tutti i diplomati");
-                Console.WriteLine("3. Stampa diplomati abili ai concorsi");
-                Console.WriteLine("4. Esci");
+                _nome = nome;
+            }
 
-                Console.Write("Scelta: ");
-                string scelta = Console.ReadLine();
+            public void SetCognome(string cognome)
+            {
+                _cognome = cognome;
+            }
 
-                switch (scelta)
+            public void SetVoto(int voto)
+            {
+                if (voto >= 36 && voto <= 100) this._voto = voto;
+                else Console.WriteLine("Il voto deve essere compreso tra 36 e 100");
+
+            }
+
+            public void Stampa(Diplomati[] myArr, int counter)
+            {
+                for (int i = 0; i < counter; i++)
                 {
-                    case "1":
-                        InserisciDiplomato(elencoDiplomati);
-                        break;
+                    Console.WriteLine(myArr[i]._nome + " " + myArr[i]._cognome + " " + myArr[i]._voto);
+                }
+            }
 
-                    case "2":
-                        StampaTuttiDiplomati(elencoDiplomati);
-                        break;
+            public void StampaAbili(Diplomati[] myArr, int counter)
+            {
+                for (int i = 0; i < counter; i++)
+                {
+                    //VECCHI
+                    if (myArr[i]._voto >= 36 && myArr[i]._voto <= 60)
+                    {
+                        if (myArr[i]._voto >= 42)
+                        {
+                            Console.WriteLine($"Il vecchio diplomato {myArr[i]._nome} {myArr[i]._cognome} con un voto di {myArr[i]._voto} è abile ai concorsi");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Il vecchio diplomato {myArr[i]._nome} {myArr[i]._cognome} con un voto di {myArr[i]._voto} non è abile ai concorsi");
+                        }
 
-                    case "3":
-                        StampaDiplomatiAbili(elencoDiplomati);
-                        break;
-
-                    case "4":
-                        Environment.Exit(0);
-                        break;
-
-                    default:
-                        Console.WriteLine("Scelta non valida. Riprova.");
-                        break;
+                    }
+                    else //NUOVI
+                    {
+                        if (myArr[i]._voto >= 70)
+                        {
+                            Console.WriteLine($"Il nuovo diplomato {myArr[i]._nome} {myArr[i]._cognome} con un voto di {myArr[i]._voto} è abile ai concorsi");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Il nuovo diplomato {myArr[i]._nome} {myArr[i]._cognome} con un voto di {myArr[i]._voto} non è abile ai concorsi");
+                        }
+                    }
                 }
             }
         }
 
-        static void InserisciDiplomato(List<Diplomato> elencoDiplomati)
+        static void Main(string[] args)
         {
-            Console.Write("Inserisci nome: ");
-            string nome = Console.ReadLine();
-
-            Console.Write("Inserisci cognome: ");
-            string cognome = Console.ReadLine();
-
-            Console.Write("Inserisci voto: ");
-            int voto = int.Parse(Console.ReadLine());
-
-            Diplomato nuovoDiplomato = new Diplomato(nome, cognome, voto);
-            elencoDiplomati.Add(nuovoDiplomato);
-
-            Console.WriteLine("Diplomato inserito con successo!");
-        }
-
-        static void StampaTuttiDiplomati(List<Diplomato> elencoDiplomati)
-        {
-            Console.WriteLine("Elenco di tutti i diplomati:");
-
-            foreach (Diplomato diplomato in elencoDiplomati)
+            int voto = 0;
+            int counter = 0;
+            Diplomati[] diplomati = new Diplomati[100];
+            for (int i = 0; i < 5; i++)
             {
-                Console.WriteLine(diplomato);
-            }
-        }
-
-        static void StampaDiplomatiAbili(List<Diplomato> elencoDiplomati)
-        {
-            Console.WriteLine("Diplomati abili ai concorsi:");
-
-            foreach (Diplomato diplomato in elencoDiplomati)
-            {
-                if (diplomato.EligibileConcorso())
+                Diplomati dip = new Diplomati();
+                Console.WriteLine("Inserire il Nome: ");
+                dip.SetNome(Console.ReadLine());
+                Console.WriteLine("Inserire il Cognome: ");
+                dip.SetCognome(Console.ReadLine());
+                do
                 {
-                    Console.WriteLine(diplomato);
-                }
+                    Console.WriteLine("Inserire il Voto: ");
+                    voto = int.Parse(Console.ReadLine());
+                    dip.SetVoto(voto);
+                } while (voto < 36 || voto > 100);
+
+                diplomati[i] = dip;
+                counter++;
+
             }
-        }
-    }
-
-    class Diplomato
-    {
-        public string Nome { get; }
-        public string Cognome { get; }
-        public int Voto { get; }
-
-        public Diplomato(string nome, string cognome, int voto)
-        {
-            Nome = nome;
-            Cognome = cognome;
-            Voto = voto;
-        }
-
-        public override string ToString()
-        {
-            return $"{Nome} {Cognome} - Voto: {Voto}";
-        }
-
-        public bool EligibileConcorso()
-        {
-            if (Voto >= 42 && Voto <= 60)
-            {
-                return true; // Vecchi diplomati abili ai concorsi
-            }
-            else if (Voto >= 70 && Voto <= 100)
-            {
-                return true; // Nuovi diplomati abili ai concorsi
-            }
-
-            return false; // Non abili ai concorsi
+            Diplomati dip1 = new Diplomati();
+            dip1.Stampa(diplomati, counter);
+            dip1.StampaAbili(diplomati, counter);
+            Console.ReadLine();
         }
     }
 }
